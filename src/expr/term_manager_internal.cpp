@@ -48,6 +48,7 @@ term_manager_internal::term_manager_internal(utils::statistics& stats)
   d_stat_vars_bool = static_cast<utils::stat_int*>(stats.register_stat("expr::term_manager_internal::bool_vars"));
   d_stat_vars_real = static_cast<utils::stat_int*>(stats.register_stat("expr::term_manager_internal::real_vars"));
   d_stat_vars_int = static_cast<utils::stat_int*>(stats.register_stat("expr::term_manager_internal::int_vars"));
+  d_stat_vars_bitvector = static_cast<utils::stat_int*>(stats.register_stat("expr::term_manager_internal::bitvector_vars"));
 
   // Create the types
   d_typeType = term_ref_strong(*this, mk_term<TYPE_TYPE>(alloc::empty_type()));

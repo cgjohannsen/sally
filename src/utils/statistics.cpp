@@ -84,6 +84,7 @@ statistics::statistics()
   add_int("expr::term_manager_internal::bool_vars", "tmbv", "Number of boolean variables");
   add_int("expr::term_manager_internal::real_vars", "tmrv", "Number of real variables");
   add_int("expr::term_manager_internal::int_vars", "tmiv", "Number of integer variables");
+  add_int("expr::term_manager_internal::bitvector_vars", "tmbvv", "Number of bitvector variables");
 
   add_int("pdkind::frame_index", "pdkfi", "Current frame index");
   add_int("pdkind::induction_depth", "pdkid", "Current induction depth");

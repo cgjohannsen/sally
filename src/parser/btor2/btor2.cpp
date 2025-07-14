@@ -24,6 +24,7 @@
 #include "command/sequence.h"
 
 #include <cassert>
+#include <unordered_map>
 
 #include "parser/btor2/btor2.h"
 

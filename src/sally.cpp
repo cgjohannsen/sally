@@ -139,12 +139,13 @@ int main(int argc, char* argv[]) {
           std::cout << "Stats after " << cmd->get_command_type_string() << std::endl;
           stats.to_stream(" - ", std::cout);
         } 
+      }
 
-        if (cmd->get_type() == cmd::QUERY && boost_opts.count("stats-format") > 0) {
-          stat_result->set_value(engine_to_use->get_last_result_string());
-          std::string format = boost_opts.at("stats-format").as<string>();
-          std::cout << stats.format(format) << std::endl;
-        }
+      // Print the final stats
+      if (boost_opts.count("stats-format") > 0) {
+        stat_result->set_value(engine_to_use->get_last_result_string());
+        std::string format = boost_opts.at("stats-format").as<string>();
+        std::cout << stats.format(format) << std::endl;
       }
     }
 

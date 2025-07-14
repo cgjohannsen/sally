@@ -651,7 +651,7 @@ solvers::query_result solvers::check_inductive(expr::term_ref f) {
 
   // Push the scope
   smt::solver_scope scope(d_induction_solver);
-  scope.push();
+  scope.push(); // FIXME: is it possible that the solver is in an unsat state?
 
   // Add the formula (moving current -> next)
   expr::term_ref F_not = d_tm.mk_term(expr::TERM_NOT, f);

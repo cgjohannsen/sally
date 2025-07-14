@@ -242,7 +242,8 @@ private:
   utils::stat_int* d_stat_vars_bool;
   utils::stat_int* d_stat_vars_int;
   utils::stat_int* d_stat_vars_real;
-
+  utils::stat_int* d_stat_vars_bitvector;
+  
   /** Compute the type of t and all subterms */
   void compute_type(term_ref t);
 
@@ -409,6 +410,8 @@ public:
         d_stat_vars_real->set_value(d_stat_vars_real->get_value() + 1);
       } else if (is_boolean_type(child)) {
         d_stat_vars_bool->set_value(d_stat_vars_bool->get_value() + 1);
+      } else if (is_bitvector_type(child)) {
+        d_stat_vars_bitvector->set_value(d_stat_vars_bitvector->get_value() + 1);
       }
     }
     return mk_term<op, term_ref*>(payload, children, children + 1);
