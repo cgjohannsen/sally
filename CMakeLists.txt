@@ -5,8 +5,13 @@ project(sally CXX C)
 enable_testing()
 
 # Set CMake policies to suppress warnings
-cmake_policy(SET CMP0167 NEW)
-cmake_policy(SET CMP0135 NEW)
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 NEW)
+endif()
+
+if(POLICY CMP0135)
+  cmake_policy(SET CMP0135 NEW)
+endif()
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wall")

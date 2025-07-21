@@ -60,16 +60,6 @@ make check
 ```
 You can also set YICES2_HOME, OPENSMT2_HOME, or DREAL_HOME.
 
-To compile with the Btor2 frontend, ensure that you have btor2tools installed 
-(using ``contrib/install_btor2tools.sh``).
-Then provide the BTOR2TOOLS_HOME directory to ``cmake`` and build with  
-```bash
-cd build
-cmake .. -DBTOR2TOOLS_HOME=path/to/contrib/btor2tools
-make
-make check
-```
-
 To compile Sally in debug mode, build with
 ```bash
 cd build
@@ -84,7 +74,9 @@ must use a version of Yices2 compiled with MCSAT support, and
 [CUDD](https://github.com/ivmai/cudd) must be
 installed on your system. As above, you can pass `-DLIBPOLY_HOME=$LPD` or
 `-DCUDD_HOME=$CD` to cmake if LibPoly or CUDD are installed in
-non-standard locations.
+non-standard locations. 
+Similarly, you can pass `-DBTOR2TOOLS_HOME=$B2TD` to enable Btor2 parsing 
+if [Btor2Tools](https://github.com/hwmcc/btor2tools) not installed in `contrib/btor2tools`.
 
 
 ## Input Language
