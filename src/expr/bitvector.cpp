@@ -115,6 +115,11 @@ void bitvector::to_stream(std::ostream& out) const {
   case output::NUXMV:
     out << "0d" << d_size << d_gmp_int.get_str();
     break;
+  case output::BTOR2:
+    for (size_t i = 0; i < d_size; ++ i) {
+      out << (mpz_tstbit(d_gmp_int.get_mpz_t(), d_size - i - 1) ? "1" : "0");
+    }
+    break;
   default:
     assert(false);
   }

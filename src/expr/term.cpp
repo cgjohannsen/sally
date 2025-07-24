@@ -182,6 +182,9 @@ void term::to_stream(std::ostream& out) const {
   case output::NUXMV:
     to_stream_nuxmv_without_let(out, *tm, let_cache);
     break;
+  case output::BTOR2:
+    to_stream_smt_without_let(out, *tm, let_cache, false);
+    break;
   default:
     assert(false);
   }

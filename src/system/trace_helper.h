@@ -102,6 +102,9 @@ class trace_helper : public expr::gc_participant {
   /** To stream using CSV */
   void to_stream_tab(std::ostream& out) const;
 
+  /** To stream using BTOR2 format */
+  void to_stream_btor2(std::ostream& out) const;
+
 public:
 
   /** Get the size of the trace */

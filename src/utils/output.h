@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <cstddef>
 #include <iosfwd>
 
 namespace sally {
@@ -38,6 +39,8 @@ enum language {
   HORN,
   // CSV: MCMT for terms, CSV for traces
   MCMT_TAB,
+  // BTOR2
+  BTOR2,
   // Unknown
   UNKNOWN
 };

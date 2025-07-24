@@ -175,6 +175,7 @@ std::string language_to_string(language lang) {
   case MCMT_TAB: return "mcmt-tab";
   case NUXMV: return "nuxmv";
   case HORN: return "horn";
+  case BTOR2: return "btor2";
   default:
     return "unknown";
   }
@@ -185,6 +186,7 @@ language language_from_string(std::string lang) {
   if (lang == "mcmt-tab") return MCMT_TAB;
   if (lang == "nuxmv") return NUXMV;
   if (lang == "horn") return HORN;
+  if (lang == "btor2") return BTOR2;
   throw exception(std::string("Unsupported language: ") + lang);
   return UNKNOWN;
 }

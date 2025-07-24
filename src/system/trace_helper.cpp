@@ -313,9 +313,62 @@ void trace_helper::to_stream_tab(std::ostream& out) const {
   d_state_type->tm().pop_namespace();
 }
 
+void trace_helper::to_stream_btor2(std::ostream& out) const {
+  d_state_type->use_namespace();
+  d_state_type->use_namespace(state_type::STATE_CURRENT);
+  d_state_type->use_namespace(state_type::STATE_INPUT);
+
+  // FIXME: need to print this based on the properties in the full file
+  // out << "sat\n";
+  // out << "b0\n";
+
+  // FIXME: Ensure that the input variables are in the same order as the input file
+  // FIXME: Ensure that the state variables are in the same order as the input file
+  
+  // Mandatory to print state variables in first state 
+  out << "#0\n";
+  for (size_t i = 0; i < d_state_variables[0].size(); ++ i) {
+    const expr::value& v = d_model->get_variable_value(d_state_variables[0][i]);
+    assert(v.is_bitvector());
+    out << i << " ";
+    v.get_bitvector().to_stream(out);
+    out << "\n";
+  }
+
+  // Print input variables in the rest of the states
+  for (size_t k = 0; k < d_model_size; ++ k) {
+    // FIXME: add "verbose" option to print out all state variables
+    // out << "#" << k << "\n";
+    // for (size_t i = 0; i < d_state_variables[k].size(); ++ i) {
+    //   const expr::value& v = d_model->get_variable_value(d_state_variables[k][i]);
+    //   assert(v.is_bitvector());
+    //   out << i << " ";
+    //   v.get_bitvector().to_stream(out);
+    //   out << "\n";
+    // }
+
+    out << "@" << k << "\n";  
+    for (size_t i = 0; i < d_input_variables[k].size(); ++ i) {
+      const expr::value& v = d_model->get_variable_value(d_input_variables[k][i]);
+      assert(v.is_bitvector());
+      out << i << " ";
+      v.get_bitvector().to_stream(out);
+      out << "\n";
+    }
+  }
+
+  out << ".\n";
+
+  d_state_type->tm().pop_namespace();
+  d_state_type->tm().pop_namespace();
+  d_state_type->tm().pop_namespace();
+}
+
 void trace_helper::to_stream(std::ostream& out) const {
   if (output::get_output_language(out) == output::MCMT_TAB) {
     to_stream_tab(out);
+  } else if (output::get_output_language(out) == output::BTOR2) {
+    to_stream_btor2(out);
   } else {
     to_stream_mcmt(out);
   }
