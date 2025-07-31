@@ -65,8 +65,8 @@ yices2_internal::yices2_internal(expr::term_manager& tm, const options& opts)
 , d_dpllt_incomplete(false)
 , d_mcsat_incomplete(false)
 , d_conversion_cache(0)
-, d_last_check_status_dpllt(STATUS_UNKNOWN)
-, d_last_check_status_mcsat(STATUS_UNKNOWN)
+, d_last_check_status_dpllt(YICES_STATUS_UNKNOWN)
+, d_last_check_status_mcsat(YICES_STATUS_UNKNOWN)
 , d_config_dpllt(NULL)
 , d_config_mcsat(NULL)
 , d_instance(s_instances)
@@ -1178,22 +1178,22 @@ solver::result yices2_internal::check(expr::model::ref m, const std::vector<expr
   // Call DPLL(T) first, then MCSAT if unsupported
   if (d_ctx_dpllt) {
     if (!m.is_null()) {
-      d_last_check_status_dpllt = STATUS_UNKNOWN;
-      d_last_check_status_mcsat = STATUS_UNKNOWN;
+      d_last_check_status_dpllt = YICES_STATUS_UNKNOWN;
+      d_last_check_status_mcsat = YICES_STATUS_UNKNOWN;
     } else {
       result = d_last_check_status_dpllt = yices_check_context(d_ctx_dpllt, 0);
-      d_last_check_status_mcsat = STATUS_UNKNOWN;
+      d_last_check_status_mcsat = YICES_STATUS_UNKNOWN;
       switch (result) {
-      case STATUS_SAT:
+      case YICES_STATUS_SAT:
         if (!d_dpllt_incomplete) {
           return solver::SAT;
         } else {
-          d_last_check_status_dpllt = STATUS_UNKNOWN;
+          d_last_check_status_dpllt = YICES_STATUS_UNKNOWN;
           break; // Do MCSAT
         }
-      case STATUS_UNSAT:
+      case YICES_STATUS_UNSAT:
         return solver::UNSAT;
-      case STATUS_UNKNOWN:
+      case YICES_STATUS_UNKNOWN:
         break; // Do MCSAT
       default: {
         std::stringstream ss;
@@ -1222,16 +1222,16 @@ solver::result yices2_internal::check(expr::model::ref m, const std::vector<expr
       yices_free_model(yices_model);
     }
     switch (result) {
-    case STATUS_SAT:
+    case YICES_STATUS_SAT:
       if (!d_mcsat_incomplete) {
         return solver::SAT;
       } else {
-        d_last_check_status_mcsat = STATUS_UNKNOWN;
+        d_last_check_status_mcsat = YICES_STATUS_UNKNOWN;
         break; // Nobody knows
       }
-    case STATUS_UNSAT:
+    case YICES_STATUS_UNSAT:
       return solver::UNSAT;
-    case STATUS_UNKNOWN:
+    case YICES_STATUS_UNKNOWN:
       return solver::UNKNOWN;
     default: {
       std::stringstream ss;
@@ -1247,13 +1247,13 @@ solver::result yices2_internal::check(expr::model::ref m, const std::vector<expr
 bool yices2_internal::is_consistent() {
   if (d_ctx_dpllt) {
     smt_status_t status = yices_context_status(d_ctx_dpllt);
-    if (status == STATUS_UNSAT) {
+    if (status == YICES_STATUS_UNSAT) {
       return false;
     }
   }
   if (d_ctx_mcsat) {
     smt_status_t status = yices_context_status(d_ctx_mcsat);
-    if (status == STATUS_UNSAT) {
+    if (status == YICES_STATUS_UNSAT) {
       return false;
     }
   }
@@ -1346,7 +1346,7 @@ model_t* yices2_internal::get_yices_model(expr::model::ref m) {
 }
 
 expr::model::ref yices2_internal::get_model() {
-  assert(d_last_check_status_dpllt == STATUS_SAT || d_last_check_status_mcsat == STATUS_SAT);
+  assert(d_last_check_status_dpllt == YICES_STATUS_SAT || d_last_check_status_mcsat == YICES_STATUS_SAT);
   assert(d_A_variables.size() > 0 || d_B_variables.size() > 0);
 
   int32_t ret = 0;
@@ -1355,7 +1355,7 @@ expr::model::ref yices2_internal::get_model() {
   expr::model::ref m = new expr::model(d_tm, false);
 
   // Get the model from yices
-  model_t* yices_model =  (d_last_check_status_dpllt == STATUS_SAT) ?
+  model_t* yices_model =  (d_last_check_status_dpllt == YICES_STATUS_SAT) ?
       yices_get_model(d_ctx_dpllt, true) :
       yices_get_model(d_ctx_mcsat, true) ;
 
@@ -1810,10 +1810,10 @@ void yices2_internal::efsmt_to_stream(std::ostream& out, const term_vector_t* G_
 
 void yices2_internal::interpolate(std::vector<expr::term_ref>& out) {
   smt_status status = yices_check_context_with_interpolation(&d_interpolation_ctx, NULL, 0);
-  if (status == STATUS_ERROR) {
+  if (status == YICES_STATUS_ERROR) {
     check_error(-1, "Yices error (interpolation)");
   }
-  assert(status == STATUS_UNSAT);
+  assert(status == YICES_STATUS_UNSAT);
   assert(d_interpolation_ctx.interpolant != NULL_TERM);
   expr::term_ref interpolant = to_term(d_interpolation_ctx.interpolant);
   TRACE("yices2::interpolation") << "I = " << interpolant << std::endl;
@@ -1822,13 +1822,13 @@ void yices2_internal::interpolate(std::vector<expr::term_ref>& out) {
     yices_push(d_interpolation_ctx.ctx_A);
     yices_assert_formula(d_interpolation_ctx.ctx_A, yices_not(d_interpolation_ctx.interpolant));
     status = yices_check_context(d_interpolation_ctx.ctx_A, NULL);
-    assert(status == STATUS_UNSAT);
+    assert(status == YICES_STATUS_UNSAT);
     yices_pop(d_interpolation_ctx.ctx_A);
     // Check I && B is unsat
     yices_push(d_interpolation_ctx.ctx_B);
     yices_assert_formula(d_interpolation_ctx.ctx_B, d_interpolation_ctx.interpolant);
     status = yices_check_context(d_interpolation_ctx.ctx_B, NULL);
-    assert(status == STATUS_UNSAT);
+    assert(status == YICES_STATUS_UNSAT);
     yices_pop(d_interpolation_ctx.ctx_B);
   }
   out.push_back(interpolant);
